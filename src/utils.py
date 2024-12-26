@@ -18,8 +18,7 @@ import numpy as np
 import pandas as pd
 from world import config
 from sklearn import preprocessing as pp
-import sys
-import similarity_func as sim
+
 
 # ANSI escape codes for bold and red
 br = "\033[1;31m"
