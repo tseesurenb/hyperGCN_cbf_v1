@@ -174,7 +174,7 @@ def load_user_file(file_path, user_mapping_path):
     return users_df
 
 
-def create_item_sim(movies_path, top_k=10, verbose=False):
+def create_item_sim(movies_path, top_k=10, threshold=0.5, verbose=False):
     # Load the entire movie dataframe into memory:
     movies_df = load_item_file(movies_path, 'data/ml-100k/item_id_mapping.csv')
     if verbose:
@@ -203,7 +203,7 @@ def create_item_sim(movies_path, top_k=10, verbose=False):
     #     for idx in top_k_indices:
     #         filtered_similarity_matrix[i, idx] = item_similarity_matrix[i, idx]
 
-    threshold = 0.5  # Replace this with your desired threshold value
+    #threshold = 0.5  # Replace this with your desired threshold value
 
     for i in range(num_items):
         # Iterate through all similarities for the current item
@@ -219,7 +219,7 @@ def create_item_sim(movies_path, top_k=10, verbose=False):
     return filtered_similarity_matrix
 
 
-def create_user_sim(user_path, top_k=10, verbose=False):
+def create_user_sim(user_path, top_k=10, threshold=0.5, verbose=False):
     # Load the user data
     user_df = load_user_file(user_path, 'data/ml-100k/user_id_mapping.csv')
     
@@ -251,8 +251,6 @@ def create_user_sim(user_path, top_k=10, verbose=False):
     #     for idx in top_k_indices:
     #         filtered_similarity_matrix[i, idx] = user_similarity_matrix[i, idx]
             
-    threshold = 0.5  # Replace this with your desired threshold value
-
     for i in range(num_users):
         # Iterate through all similarities for the current user
         for j in range(len(user_similarity_matrix[i])):

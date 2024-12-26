@@ -133,6 +133,8 @@ def create_uuii_adjmat2(df, verbose=-1):
     u_top_k = config['u_K']
     i_top_k = config['i_K']
     self_loop = config['self_loop']
+    u_thresh = config['u_T']
+    i_thresh = config['i_T']
     
     if verbose > 0:
         print('Creating a user-item matrix...')
@@ -148,13 +150,13 @@ def create_uuii_adjmat2(df, verbose=-1):
     movies_path = 'data/ml-100k/u.item'
     # Generate user-user similarity matrix using external `create_user_sim`
     if u_sim == 'cos':
-        user_user_sim_matrix = fs.create_user_sim(users_path, top_k=u_top_k)
+        user_user_sim_matrix = fs.create_user_sim(users_path, top_k=u_top_k, threshold=u_thresh)
     else:
         print(f'{u_sim} similarity metric for users is not implemented in this function.')
 
     # Generate item-item similarity matrix using external `create_item_sim`
     if i_sim == 'cos':
-        item_item_sim_matrix = fs.create_item_sim(movies_path, top_k=i_top_k)
+        item_item_sim_matrix = fs.create_item_sim(movies_path, top_k=i_top_k, threshold=i_thresh)
     else:
         print(f'{i_sim} similarity metric for items is not implemented in this function.')
 
