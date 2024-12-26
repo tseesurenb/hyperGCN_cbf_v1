@@ -1,0 +1,11 @@
+*.csv
+*.pt
+*.txt
+*.dat
+data/
+src/data/
+src/models/
+src/models/plots/
+src/models/results/
+src/pre_proc/
+src/backup/
