@@ -195,13 +195,23 @@ def create_item_sim(movies_path, top_k=10, verbose=False):
     num_items = item_similarity_matrix.shape[0]
     filtered_similarity_matrix = np.zeros_like(item_similarity_matrix)
 
-    for i in range(num_items):
-        # Get the indices of the top_k most similar items for the current item
-        top_k_indices = np.argsort(item_similarity_matrix[i])[-top_k:]
+    # for i in range(num_items):
+    #     # Get the indices of the top_k most similar items for the current item
+    #     top_k_indices = np.argsort(item_similarity_matrix[i])[-top_k:]
         
-        # Retain only the top_k similarities
-        for idx in top_k_indices:
-            filtered_similarity_matrix[i, idx] = item_similarity_matrix[i, idx]
+    #     # Retain only the top_k similarities
+    #     for idx in top_k_indices:
+    #         filtered_similarity_matrix[i, idx] = item_similarity_matrix[i, idx]
+
+    threshold = 0.5  # Replace this with your desired threshold value
+
+    for i in range(num_items):
+        # Iterate through all similarities for the current item
+        for j in range(len(item_similarity_matrix[i])):
+            # Retain only similarities above the threshold
+            if item_similarity_matrix[i, j] >= threshold:
+                filtered_similarity_matrix[i, j] = item_similarity_matrix[i, j]
+
 
     if verbose:
         print("Filtered Item-Item Similarity Matrix Shape:", filtered_similarity_matrix.shape)
@@ -233,13 +243,22 @@ def create_user_sim(user_path, top_k=10, verbose=False):
     num_users = user_similarity_matrix.shape[0]
     filtered_similarity_matrix = np.zeros_like(user_similarity_matrix)
 
-    for i in range(num_users):
-        # Get the indices of the top_k most similar users for the current user
-        top_k_indices = np.argsort(user_similarity_matrix[i])[-top_k:]
+    # for i in range(num_users):
+    #     # Get the indices of the top_k most similar users for the current user
+    #     top_k_indices = np.argsort(user_similarity_matrix[i])[-top_k:]
         
-        # Retain only the top_k similarities
-        for idx in top_k_indices:
-            filtered_similarity_matrix[i, idx] = user_similarity_matrix[i, idx]
+    #     # Retain only the top_k similarities
+    #     for idx in top_k_indices:
+    #         filtered_similarity_matrix[i, idx] = user_similarity_matrix[i, idx]
+            
+    threshold = 0.5  # Replace this with your desired threshold value
+
+    for i in range(num_users):
+        # Iterate through all similarities for the current user
+        for j in range(len(user_similarity_matrix[i])):
+            # Retain only similarities above the threshold
+            if user_similarity_matrix[i, j] >= threshold:
+                filtered_similarity_matrix[i, j] = user_similarity_matrix[i, j]
 
     if verbose:
         print("Filtered User-User Similarity Matrix Shape:", filtered_similarity_matrix.shape)
