@@ -31,8 +31,8 @@ os.makedirs(pred_dir, exist_ok=True)
 # STEP 2: Load the data
 train_df, test_df = dp.load_data_from_adj_list(dataset = config['dataset'])
 
-print(type(train_df))
-train_df = dp.filter_cold_start_users(train_df, threshold=100)
+#print(type(train_df))
+#train_df = dp.filter_cold_start_users(train_df, threshold=100)
 
 print(type(train_df))
 print(train_df.head())
