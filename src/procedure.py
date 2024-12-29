@@ -156,10 +156,12 @@ def train_and_eval(model, optimizer, train_df, test_df, edge_index, edge_attrs, 
 
 def exec_exp(orig_train_df, orig_test_df, exp_n = 1, g_seed=42, device='cpu', verbose = -1):
     
-    _test_df = orig_test_df[
-      (orig_test_df['user_id'].isin(orig_train_df['user_id'].unique())) & \
-      (orig_test_df['item_id'].isin(orig_train_df['item_id'].unique()))
-    ]
+    # _test_df = orig_test_df[
+    #   (orig_test_df['user_id'].isin(orig_train_df['user_id'].unique())) & \
+    #   (orig_test_df['item_id'].isin(orig_train_df['item_id'].unique()))
+    # ]
+    
+    _test_df = orig_test_df
     
     _train_df, _test_df = ut.encode_ids(orig_train_df, _test_df)
         
