@@ -288,3 +288,26 @@ def load_data_from_adj_list(dataset = "lastfm", verbose = 0):
     gc.collect()
         
     return train_df, test_df
+
+def filter_cold_start_users(train_df, threshold):
+    """
+    Filters the train_df to include only users with fewer interactions than the given threshold.
+
+    Parameters:
+        train_df (pd.DataFrame): The training DataFrame containing user-item interactions.
+                                 Expected to have columns 'user_id' and 'item_id'.
+        threshold (int): The maximum number of interactions for a user to be considered cold-start.
+
+    Returns:
+        pd.DataFrame: A filtered DataFrame containing only interactions of cold-start users.
+    """
+    # Count interactions per user
+    user_interaction_counts = train_df.groupby('user_id').size()
+    
+    # Identify users with interactions below the threshold
+    cold_start_users = user_interaction_counts[user_interaction_counts < threshold].index
+    
+    # Filter the train_df for these users
+    filtered_train_df = train_df[train_df['user_id'].isin(cold_start_users)]
+    
+    return filtered_train_df

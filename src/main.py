@@ -26,17 +26,24 @@ pred_dir = f"models/preds"
 os.makedirs(res_dir, exist_ok=True)
 os.makedirs(load_dir, exist_ok=True)
 os.makedirs(plot_dir, exist_ok=True)
-os.makedirs(pred_dir, exist_ok=True)
-    
+os.makedirs(pred_dir, exist_ok=True)    
 
 # STEP 2: Load the data
 train_df, test_df = dp.load_data_from_adj_list(dataset = config['dataset'])
+
+print(type(train_df))
+train_df = dp.filter_cold_start_users(train_df, threshold=100)
+
+print(type(train_df))
+print(train_df.head())
 
 num_users = train_df['user_id'].nunique()
 num_items = train_df['item_id'].nunique()
 num_interactions = len(train_df) + len(test_df)
 
 dataset_stats = {'num_users': num_users, 'num_items': num_items,  'num_interactions': num_interactions}
+
+print(f"Dataset: {config['dataset']}")
 
 # STEP 3: Execute the experiment
 #seeds = [2020, 12, 89, 91, 41]

@@ -12,7 +12,7 @@ import utils as ut
 from tqdm import tqdm
 from model import RecSysGNN, get_all_predictions
 from world import config
-from data_prep import get_edge_index, create_uuii_adjmat2
+from data_prep import get_edge_index, create_uuii_adjmat2, create_uuii_adjmat, sum_common_entries
 import time
 import sys
 
@@ -176,8 +176,12 @@ def exec_exp(orig_train_df, orig_test_df, exp_n = 1, g_seed=42, device='cpu', ve
      
     if config['edge'] == 'bi': # edge from a bipartite graph
         
-        u_t = torch.LongTensor(_train_df.user_id)
-        i_t = torch.LongTensor(_train_df.item_id) + N_USERS
+        #u_t = torch.LongTensor(_train_df.user_id)
+        #i_t = torch.LongTensor(_train_df.item_id) + N_USERS
+        
+        u_t = torch.LongTensor(_train_df['user_id'].values)  # Convert Series to NumPy array
+        i_t = torch.LongTensor(_train_df['item_id'].values) + N_USERS  # Convert Series to NumPy array
+
     
         bi_edge_index = torch.stack((
             torch.cat([u_t, i_t]),
@@ -191,7 +195,10 @@ def exec_exp(orig_train_df, orig_test_df, exp_n = 1, g_seed=42, device='cpu', ve
          
     if config['edge'] == 'knn': # edge from a k-nearest neighbor or similarity graph
         
+        #knn_train_adj_df1 = create_uuii_adjmat(_train_df, verbose)
         knn_train_adj_df = create_uuii_adjmat2(_train_df, verbose)
+        
+        #knn_train_adj_df = sum_common_entries(knn_train_adj_df1, knn_train_adj_df2)
          
         knn_edge_index, knn_edge_attrs = get_edge_index(knn_train_adj_df)
         knn_edge_index = torch.tensor(knn_edge_index).to(device).long()
