@@ -78,13 +78,10 @@ class hyperGAT(MessagePassing):
         self.graph_norms = None
         self.edge_attrs = None
         self.add_self_loops = self_loop
-        self.attr_drop = attr_drop # make edge_attr 0 for 20% of edges
         
     def forward(self, x, edge_index, edge_attrs, scale):
         
         if self.graph_norms is None:
-          # Compute normalization  
-          #self.edge_index_norm = gcn_norm(edge_index=edge_index, add_self_loops=self.add_self_loops)
           
           from_, to_ = edge_index
           deg = degree(to_, x.size(0), dtype=x.dtype)
@@ -96,8 +93,9 @@ class hyperGAT(MessagePassing):
           if config['e_attr_mode'] == 'exp' and edge_attrs != None:  
             self.edge_attrs = torch.exp(scale * edge_attrs)
           elif config['e_attr_mode'] == 'smax' and edge_attrs != None:
-            self.edge_attrs = softmax(edge_attrs, to_) # sofmax over all edges from the source nodes to the target nodes
-            norm = deg_inv_sqrt[from_] # only normalize the source nodes
+            incoming_norm = softmax(edge_attrs, to_)
+            outgoing_norm = softmax(edge_attrs, from_)
+            norm = torch.sqrt(incoming_norm * outgoing_norm)            
             self.graph_norms = norm
           elif config['e_attr_mode'] == 'raw' and edge_attrs != None:
             self.edge_attrs = edge_attrs
@@ -105,19 +103,12 @@ class hyperGAT(MessagePassing):
             self.edge_attrs = None
           else:
             print('Invalid edge_attr_mode')
-                  
-        if self.attr_drop >= 0.0 and self.edge_attrs != None:
-          self.edge_attrs = edge_attr_drop(edge_index, self.edge_attrs, self.attr_drop, mode=config['drop_mode'])
-        
+                   
         # Start propagating messages (no update after aggregation)
         return self.propagate(edge_index, x=x, norm=self.graph_norms, attr = self.edge_attrs)
 
     def message(self, x_j, norm, attr):
-        # Attended message passing      
-        if attr != None:
-            return norm.view(-1, 1) * (x_j * attr.view(-1, 1))
-        else:
-            return norm.view(-1, 1) * x_j
+      return norm.view(-1, 1) * x_j
           
 
 # NGCF Convolutional Layer
