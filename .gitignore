@@ -4,8 +4,8 @@
 *.dat
 data/
 src/data/
-src/models/
+src/models/params/
 src/models/plots/
-src/models/results/
+src/models/preds/
 src/pre_proc/
 src/backup/
